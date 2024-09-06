@@ -95,7 +95,11 @@ void tcp_pthread::DeerSwitch(void)
 					if (gb->Match_list.fd[i] == join_num) {
 						log("join succeed!");
 						this->tx_uint16(A_JOIN_ROOM_SUCCEED_ID, join_num);
-						this->fb_tx(join_num, A_JOIN_ROOM_SUCCEED_ID, (uint8_t *)&this->fd, 2);
+
+						uint8_t this_fd[2];
+						this_fd[0] = (this->fd & 0xff00) >> 8;
+						this_fd[1] = this->fd & 0x00ff;
+						this->fb_tx(join_num, A_JOIN_ROOM_SUCCEED_ID, this_fd, 2);
 
 						log("网络月老牵线成功!");
 					}
