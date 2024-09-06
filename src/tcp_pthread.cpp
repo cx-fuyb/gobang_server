@@ -17,7 +17,7 @@ void *sever_dispose_thread(void *args)
 		if (ret > 0) {
             tp->out_time = 0;
             uint8_t tcp_date = revData & 0xff;
-            log("%d", revData);
+            log("%#02x", revData);
             tp->analysis(tcp_date);
 		}
 	}
@@ -93,7 +93,7 @@ void tcp_pthread::DeerSwitch(void)
 			{
 				if (gb->Match_list.fd[i] != 0) {
 					if (gb->Match_list.fd[i] == join_num) {
-						log("join succeed!");
+						//log("join succeed!");
 						this->tx_uint16(A_JOIN_ROOM_SUCCEED_ID, join_num);
 
 						uint8_t this_fd[2];
@@ -112,7 +112,7 @@ void tcp_pthread::DeerSwitch(void)
 		case A_TELL_DATA:{		/* 用户获取id */
 			uint16_t tell_id = this->buff[4]<<8 | this->buff[5];
 			this->fb_tx(tell_id, this->buff[3], (uint8_t *)&this->buff[6], rxlen-2);
-			log("发给%d", tell_id);
+			log("发给%#02x, 数据长度:%d", tell_id, (int)(rxlen-2));
 			break;
 		}
 	}
@@ -152,8 +152,6 @@ void tcp_pthread::analysis(uint8_t date)
 			this->buff[this->cnt++] = date;
 			if (date == 0xDF) {
 				this->step = 2;
-			} else {
-				this->step = 0;
 			}
 			break;
 		case 2:
