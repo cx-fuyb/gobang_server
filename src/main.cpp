@@ -1,13 +1,33 @@
 #include "incl.h"
 #include "gobang.h"
+#include <csignal>
 
 gobang *gb;
+int fd;
+bool running = true;
+
+void signalHandler(int signum) {
+    log(" 触发Ctrl+C ");
+    running = false;
+
+    for (int i = 0; i < gb->tp_num; i++) {
+        delete gb->tp_list[gb->tp_num];
+    }
+
+    delete gb;
+
+    log("delete ok !");
+    close(fd);  // 关闭监听套接字以中断 accept
+}
 
 int main() {
+    // 注册信号处理函数
+    std::signal(SIGINT, signalHandler);
+
     log("Hello Ubuntu");
 
     /* get linux socket device */
-    int fd = socket(AF_INET, SOCK_STREAM, 0);
+    fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (0 > fd) {
 		err("linux-sever socket fall! %d", fd);	
 		return -1;
@@ -38,7 +58,7 @@ int main() {
     /* 为加入网络的设备添加线程 */
 	for (;;) {
 		int clifd = accept(fd, NULL, NULL);
-
+        if (!running) break;
 		if (clifd < 0) {
 
 			err("socket:%d join 失败", fd);
@@ -57,7 +77,7 @@ int main() {
 		}
 	}
 
-    close(fd);
+    // close(fd);
     log("linux-sever 关闭成功...");
     return 0;
 }
