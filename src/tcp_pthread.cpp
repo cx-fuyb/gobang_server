@@ -43,12 +43,13 @@ void tcp_pthread::tx_list(uint16_t tx_fb, std::string str)
 	data[0] = tx_fb>>8;
 	data[1] = tx_fb&0x00ff;
 
-	for (i = 2; i<str.length(); i++) {
+	for (i = 2; i<str.length()+1+2; i++) {
 		data[i] = str.c_str()[i-2];
+		//log("%x", str.c_str()[i-2]);
 	}
 	
-	log("txfd:%d, str:%s", tx_fb, str.c_str());
-	this->tx(A_POST_GET_HOUSE, (uint8_t *)data, i+2);
+	log("txfd:%d, len:%d  str:%s", tx_fb, (int)str.length()+1+2, str.c_str());
+	this->tx(A_POST_GET_HOUSE, (uint8_t *)data, str.length()+1+2);
 }
 
 /**
@@ -73,6 +74,7 @@ void tcp_pthread::DeerSwitch(void)
 			for (int i = 0; i < gb->Match_list.fd_num; i++) {
 				if (gb->Match_list.fd[i] != 0) {
 					tx_list(gb->Match_list.fd[i], gb->Match_list.room_name[i]);	
+					//log("发送的时候:%s", gb->Match_list.room_name[i].c_str());
 					//log("等待");
 					//sleep(1);
 					usleep(50);
