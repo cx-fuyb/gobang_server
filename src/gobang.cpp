@@ -16,6 +16,7 @@ gobang::gobang(/* args */)
 
 gobang::~gobang()
 {
+    
 }
 
 void gobang::create_room(int fd, char *str, int len)

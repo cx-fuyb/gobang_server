@@ -74,12 +74,36 @@ void tcp_pthread::DeerSwitch(void)
 				if (gb->Match_list.fd[i] != 0) {
 					tx_list(gb->Match_list.fd[i], gb->Match_list.room_name[i]);	
 					//log("等待");
-					sleep(1);
+					//sleep(1);
+					usleep(50);
 					//log("等待结束");
 				}
 			}
 			
 			tx_list(0, "");	
+			break;
+		case A_JOIN_ROOM_ID:{		/* 加入房间 */
+			
+			int join_num = (this->buff[4]<<8) | (this->buff[5]);
+			log("join fd%d", join_num);
+
+			for (int i = 0; i < _GAME_USER_MAX_; i++)
+			{
+				if (gb->Match_list.fd[i] != 0) {
+					if (gb->Match_list.fd[i] == join_num) {
+						log("join succeed!");
+						this->tx_uint16(A_JOIN_ROOM_SUCCEED_ID, join_num);
+						this->fb_tx(join_num, A_JOIN_ROOM_SUCCEED_ID, (uint8_t *)&this->fd, 2);
+
+						log("网络月老牵线成功!");
+					}
+				}
+			}
+			
+			break;
+		}
+		case A_TELL_DATA:		/* 用户获取id */
+			this->tx_uint16(A_JOIN_SERVER_SUCCEED_ID, this->fd);
 			break;
 	}
 }

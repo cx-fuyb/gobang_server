@@ -4,10 +4,14 @@
 
 #include "incl.h"
 
+
 #define 		A_POST_CREATE_HOUSE				0xE1
 #define 		A_JOIN_SERVER_ID                0xE2
 #define 		A_JOIN_SERVER_SUCCEED_ID        0xE3
 #define 		A_POST_GET_HOUSE                0xE4
+#define 		A_JOIN_ROOM_ID                  0xE5
+#define 		A_JOIN_ROOM_SUCCEED_ID          0xE6
+#define 		A_TELL_DATA                     0xE7
 
 class tcp_pthread
 {
