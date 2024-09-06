@@ -251,5 +251,6 @@ void tcp_pthread::tx_uint16(uint8_t fun, uint16_t date)
 
 tcp_pthread::~tcp_pthread()
 {
-
+	close(this->fd);
+	log("调用细狗");
 }

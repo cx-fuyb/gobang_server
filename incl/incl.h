@@ -6,7 +6,7 @@ typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
 
 #define PORT                (3305)
-#define _GAME_USER_MAX_     500
+#define _GAME_USER_MAX_     100
 
 #define log(fmt,...)    printf("\e[42m[%s] %s:%d\e[0m--"#fmt"\n", __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)
 #define err(fmt,...)    printf("\e[41m[%s] %s:%d\e[0m--"#fmt"\n", __FILE__, __FUNCTION__, __LINE__, ##__VA_ARGS__)

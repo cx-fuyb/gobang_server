@@ -35,6 +35,9 @@ int main() {
         log("Apply to socket succeed");
     }
 
+    int opt = 1;
+    setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const void *)&opt, sizeof(opt));
+
     /* apply post */
     struct sockaddr_in addr;
 	addr.sin_family = AF_INET;
@@ -54,6 +57,13 @@ int main() {
 
     gb = new gobang();
     log("gobang-sever 创建成功...");
+
+
+    for (int i=0; i < _GAME_USER_MAX_; i++) {
+        gb->tp_list[i] = 0;
+    }
+
+    //gb->tp_list[9] = new tcp_pthread(5);  
 
     /* 为加入网络的设备添加线程 */
 	for (;;) {
@@ -77,7 +87,13 @@ int main() {
 		}
 	}
 
-    // close(fd);
+    for (int i=0; i < _GAME_USER_MAX_; i++) {
+        if (gb->tp_list[i] != 0) {
+            delete gb->tp_list[i];
+        };
+    }
+
+    close(fd);
     log("linux-sever 关闭成功...");
     return 0;
 }
