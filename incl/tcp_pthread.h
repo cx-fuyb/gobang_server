@@ -12,6 +12,7 @@
 #define 		A_JOIN_ROOM_ID                  0xE5
 #define 		A_JOIN_ROOM_SUCCEED_ID          0xE6
 #define 		A_TELL_DATA                     0xE7
+#define 		A_TELL_STRING                   0xE8
 
 class tcp_pthread
 {

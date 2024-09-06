@@ -104,9 +104,13 @@ void tcp_pthread::DeerSwitch(void)
 			
 			break;
 		}
-		case A_TELL_DATA:		/* 用户获取id */
-			this->tx_uint16(A_JOIN_SERVER_SUCCEED_ID, this->fd);
+		case A_TELL_STRING:		/* 发送文本 */
+		case A_TELL_DATA:{		/* 用户获取id */
+			uint16_t tell_id = this->buff[4]<<8 | this->buff[5];
+			this->fb_tx(tell_id, this->buff[3], (uint8_t *)&this->buff[6], rxlen-2);
+			log("发给%d", tell_id);
 			break;
+		}
 	}
 }
 
