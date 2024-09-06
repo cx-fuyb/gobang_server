@@ -5,13 +5,9 @@
 #include "incl.h"
 
 #define 		A_POST_CREATE_HOUSE				0xE1
-
-
-#define 		A_APP						0xE2
-#define 		A_DEIVER					0xE3
-#define 		A_SWITCH					0xE4
-#define 		A_RESET						0xFB
-#define 		A_DEIVER_NAME				0xFD
+#define 		A_JOIN_SERVER_ID                0xE2
+#define 		A_JOIN_SERVER_SUCCEED_ID        0xE3
+#define 		A_POST_GET_HOUSE                0xE4
 
 class tcp_pthread
 {
@@ -31,7 +27,7 @@ private:
     void DeerSwitch(void);
     void DeerParsing(void);
     void fb_tx(int fb, uint8_t fun, uint8_t *date, uint8_t datelen);
-
+    void tx_list(uint16_t fb, std::string str);
 public:
     void analysis(uint8_t date);
     void tx(uint8_t fun, uint8_t *date, uint8_t datelen);

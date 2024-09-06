@@ -1,4 +1,6 @@
 #include "tcp_pthread.h"
+#include "gobang.h"
+extern gobang *gb;
 
 void *sever_dispose_thread(void *args)
 {
@@ -33,7 +35,21 @@ tcp_pthread::tcp_pthread(int fd)
     pthread_create(&this->thread, NULL, sever_dispose_thread,(void *)this);
     log("线程创建成功");
 }
+void tcp_pthread::tx_list(uint16_t tx_fb, std::string str)
+{
+	char data[40];
+	int i;
 
+	data[0] = tx_fb>>8;
+	data[1] = tx_fb&0x00ff;
+
+	for (i = 2; i<str.length(); i++) {
+		data[i] = str.c_str()[i-2];
+	}
+	
+	log("txfd:%d, str:%s", tx_fb, str.c_str());
+	this->tx(A_POST_GET_HOUSE, (uint8_t *)data, i+2);
+}
 
 /**
  * @brief  根据上位机命令做出对应响应
@@ -42,15 +58,28 @@ tcp_pthread::tcp_pthread(int fd)
  */
 void tcp_pthread::DeerSwitch(void)
 {
-	if (this->buff[3]<60) {		
-		log("%d开始说小话", this->buff[3]);
-		return;
-	}
-
 	switch(this->buff[3])
 	{
-		case A_POST_CREATE_HOUSE:		/* 应用端 */
+		case A_POST_CREATE_HOUSE:		/* 创建房间 */
 			log("app post create house");
+			gb->create_room(this->fd, (char *)&this->buff[4], 0);
+			this->tx_uint8(A_POST_CREATE_HOUSE, 0);
+			break;
+		case A_JOIN_SERVER_ID:		/* 用户获取id */
+			this->tx_uint16(A_JOIN_SERVER_SUCCEED_ID, this->fd);
+			break;
+		case A_POST_GET_HOUSE:		/* 用户获取id */
+			log("收到请求");
+			for (int i = 0; i < gb->Match_list.fd_num; i++) {
+				if (gb->Match_list.fd[i] != 0) {
+					tx_list(gb->Match_list.fd[i], gb->Match_list.room_name[i]);	
+					//log("等待");
+					sleep(1);
+					//log("等待结束");
+				}
+			}
+			
+			tx_list(0, "");	
 			break;
 	}
 }

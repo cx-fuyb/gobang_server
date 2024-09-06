@@ -1,6 +1,8 @@
 #include "incl.h"
 #include "gobang.h"
 
+gobang *gb;
+
 int main() {
     log("Hello Ubuntu");
 
@@ -30,7 +32,7 @@ int main() {
 	listen(fd, _GAME_USER_MAX_);
 	log("linux-sever 启动成功...");
 
-    gobang gb;
+    gb = new gobang();
     log("gobang-sever 创建成功...");
 
     /* 为加入网络的设备添加线程 */
@@ -41,11 +43,11 @@ int main() {
 
 			err("socket:%d join 失败", fd);
 		} else {
-            if (gb.tp_num < _GAME_USER_MAX_) {
+            if (gb->tp_num < _GAME_USER_MAX_) {
                 
                 /* 创建一个通信线程 */
-                gb.tp_list[gb.tp_num] = new tcp_pthread(clifd);
-                gb.tp_num++;//用户数+1
+                gb->tp_list[gb->tp_num] = new tcp_pthread(clifd);
+                gb->tp_num++;//用户数+1
 
                 log("连接成功 clifd:%d", clifd);
             } else {
