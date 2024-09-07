@@ -32,6 +32,7 @@ public:
 
     //线程数
     tcp_pthread *tp_list[_GAME_USER_MAX_];
+    uint8_t tp_list_flag[_GAME_USER_MAX_];
     uint16_t tp_num = 0;
 public:
     gobang(/* args */);

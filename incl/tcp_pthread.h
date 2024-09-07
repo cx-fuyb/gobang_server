@@ -13,6 +13,8 @@
 #define 		A_JOIN_ROOM_SUCCEED_ID          0xE6
 #define 		A_TELL_DATA                     0xE7
 #define 		A_TELL_STRING                   0xE8
+#define 		A_EXIT_SERVER_ID                0xE9
+#define 		A_EXIT_ROOM_ID                  0xEA
 
 class tcp_pthread
 {
@@ -24,6 +26,8 @@ public:
 
 private:
     pthread_t thread;
+    
+    int this_i;
     
     uint8_t step;
 	uint8_t cnt;
@@ -39,7 +43,7 @@ public:
     void tx_uint8(uint8_t fun, uint8_t date);
     void tx_uint16(uint8_t fun, uint16_t date);
 
-    tcp_pthread(int fd);
+    tcp_pthread(int fd, int this_i);
     ~tcp_pthread();
 };
 

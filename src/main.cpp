@@ -61,6 +61,7 @@ int main() {
 
     for (int i=0; i < _GAME_USER_MAX_; i++) {
         gb->tp_list[i] = 0;
+        gb->tp_list_flag[i] = 0;
     }
 
     //gb->tp_list[9] = new tcp_pthread(5);  
@@ -76,8 +77,15 @@ int main() {
             if (gb->tp_num < _GAME_USER_MAX_) {
                 
                 /* 创建一个通信线程 */
-                gb->tp_list[gb->tp_num] = new tcp_pthread(clifd);
-                gb->tp_num++;//用户数+1
+                for (int i=0; i < _GAME_USER_MAX_; i++) {
+                    if (gb->tp_list_flag[i] == 0) {
+                        gb->tp_list[i] = new tcp_pthread(clifd, i);
+                        gb->tp_list_flag[i] = 1;
+                        break;
+                    }
+                }
+                
+                //gb->tp_num++;//用户数+1
 
                 log("连接成功 clifd:%d", clifd);
             } else {
@@ -88,7 +96,7 @@ int main() {
 	}
 
     for (int i=0; i < _GAME_USER_MAX_; i++) {
-        if (gb->tp_list[i] != 0) {
+        if (gb->tp_list_flag[i] != 0) {
             delete gb->tp_list[i];
         };
     }

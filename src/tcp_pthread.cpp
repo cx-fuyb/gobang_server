@@ -23,10 +23,12 @@ void *sever_dispose_thread(void *args)
 	}
 }
 
-tcp_pthread::tcp_pthread(int fd)
+tcp_pthread::tcp_pthread(int fd, int this_i)
 {
     this->fd = fd;
     this->out_time = 0;
+
+	this->this_i = this_i;
 
     this->cnt = 0;
 	this->step = 0;
@@ -115,6 +117,11 @@ void tcp_pthread::DeerSwitch(void)
 			log("发给%#02x, 数据长度:%d", tell_id, (int)(rxlen-2));
 			break;
 		}
+		case A_EXIT_SERVER_ID:
+			log("人故有一四，或轻于鸿毛或重于泰山");
+			gb->tp_list_flag[this->this_i] = 0;
+			delete this;
+			break;
 	}
 }
 
